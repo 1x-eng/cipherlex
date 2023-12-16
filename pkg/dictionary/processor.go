@@ -4,6 +4,8 @@ import (
 	"bufio"
 	"os"
 	"strings"
+
+	"github.com/1x-eng/cipherlex/pkg/config"
 )
 
 // interface for loading and filtering words from a dictionary.
@@ -14,11 +16,11 @@ type DictionaryProcessor interface {
 
 // Processor implements the DictionaryProcessor interface.
 type Processor struct {
-	config Configurator
+	config config.DictionaryConfig
 }
 
 // NewProcessor creates a new Processor with the given configuration.
-func NewProcessor(config Configurator) *Processor {
+func NewProcessor(config config.DictionaryConfig) *Processor {
 	return &Processor{
 		config: config,
 	}
@@ -56,12 +58,12 @@ func (p *Processor) readWordsFromFile(filePath string) ([]string, error) {
 }
 
 // isValidWord is a utility to check if the given word is valid according to the configuration.
-func isValidWord(word string, config Config) bool {
+func isValidWord(word string, config config.DictionaryConfig) bool {
 	return len(word) >= config.MinWordLength && len(word) <= config.MaxWordLength
 }
 
 // filterWords filters the given words according to the configuration.
-func filterWords(words []string, config Config) []string {
+func filterWords(words []string, config config.DictionaryConfig) []string {
 	var filteredWords []string
 	wordSet := make(map[string]struct{})
 
@@ -84,6 +86,5 @@ func filterWords(words []string, config Config) []string {
 
 // ApplyConstraints applies the constraints to the given words.
 func (p *Processor) ApplyConstraints(words []string) []string {
-	config := p.config.GetConfig()
-	return filterWords(words, config)
+	return filterWords(words, p.config)
 }
