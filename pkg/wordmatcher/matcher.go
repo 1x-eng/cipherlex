@@ -13,6 +13,7 @@ import (
 type Matcher struct {
 	trie      *trie.Trie
 	chunkSize int
+	dictWords []string
 }
 
 // creates a new Matcher with the given dictionary and configuration.
@@ -20,6 +21,7 @@ func NewMatcher(dict []string, cfg config.AppConfig) *Matcher {
 	m := &Matcher{
 		trie:      trie.NewTrie(),
 		chunkSize: cfg.ChunkSize,
+		dictWords: dict,
 	}
 	for _, word := range dict {
 		key := generateKey(word)
@@ -91,4 +93,17 @@ func splitString(input string, chunkSize int) []string {
 		chunks = append(chunks, input[i:end])
 	}
 	return chunks
+}
+
+// counts the unique occurrences of dictionary words in the matches.
+func (m *Matcher) CountUniqueMatches(matches map[string]struct{}) int {
+	uniqueWords := make(map[string]struct{})
+	for match := range matches {
+		for _, word := range m.dictWords {
+			if generateKey(word) == generateKey(match) {
+				uniqueWords[word] = struct{}{}
+			}
+		}
+	}
+	return len(uniqueWords)
 }
