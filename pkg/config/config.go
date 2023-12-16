@@ -9,6 +9,7 @@ import (
 type AppConfig struct {
 	DictionaryConfig
 	InputConfig
+	ChunkSize int
 }
 
 // DictionaryConfig holds configuration settings specific to dictionary processing.
@@ -38,6 +39,7 @@ func NewAppConfig() AppConfig {
 			MaxLineLength: getEnvAsInt("MAX_LINE_LENGTH", 500),
 			MaxLineCount:  getEnvAsInt("MAX_LINE_COUNT", 100),
 		},
+		ChunkSize: getEnvAsInt("CHUNK_SIZE", 1024),
 	}
 }
 

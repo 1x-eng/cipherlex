@@ -18,7 +18,7 @@ type Processor struct {
 	config config.InputConfig
 }
 
-// NewProcessor creates a new input Processor with the given configuration.
+// creates a new input Processor with the given configuration.
 func NewProcessor(config config.InputConfig) *Processor {
 	return &Processor{
 		config: config,

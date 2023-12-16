@@ -19,7 +19,7 @@ type Processor struct {
 	config config.DictionaryConfig
 }
 
-// NewProcessor creates a new Processor with the given configuration.
+// creates a new Processor with the given configuration.
 func NewProcessor(config config.DictionaryConfig) *Processor {
 	return &Processor{
 		config: config,
