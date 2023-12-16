@@ -6,6 +6,39 @@ CipherLex is a Go application that identifies occurrences of dictionary words wi
 ## System Requirements
 Go (1.x or higher)
 
+## How does it work?
+
+```mermaid
+graph TD
+    A[Start] --> B[Load Dictionary]
+    B --> C[Process Dictionary Words]
+    C --> D[Load Input File]
+    D --> E[Split Input into Chunks]
+    E --> |For each chunk| F[Process Chunks in Parallel]
+    subgraph Parallel Processing
+        F --> G[Chunk 1]
+        F --> H[Chunk 2]
+        F --> I[Chunk n]
+    end
+    G --> J[Merge Results]
+    H --> J
+    I --> J
+    J --> K[Count Unique Matches]
+    K --> L[Output Results]
+    L --> M[End]
+``````
+
+- **Start**: The beginning of the program.
+- **Load Dictionary**: Reads the dictionary file.
+- **Process Dictionary Words**: Applies constraints and processes dictionary words.
+- **Load Input File**: Reads the input file (line by line, this is serial atm, we could leverage concurrency here as well. Its my todo.)
+- **Split Input into Chunks**: Divides the input text into chunks for parallel processing.
+- **Process Chunks in Parallel**: Concurrently processes each chunk to find matches.
+- **Merge Results**: Combines results from all chunks (more akin of 'reduce' step of mapR)
+- **Count Unique Matches**: Counts the unique dictionary words found.
+- **Output Results**: Formats and outputs the results per line.
+- **End**: The end of the program.
+
 ## Getting Started
 
 - Download & build
