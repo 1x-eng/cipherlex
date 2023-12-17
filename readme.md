@@ -53,6 +53,11 @@ go build -o cipherlex ./cmd
 ./cipherlex --dictionary path/to/dictionary.txt --input path/to/input.txt
 ```
 
+- Example
+```bash
+./cipherlex --dictionary ./examples/1/dict.txt --input ./examples/1/input.txt
+```
+
 
 ### Dictionary File Format
 - One word per line.
