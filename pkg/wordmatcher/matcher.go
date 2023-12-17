@@ -1,7 +1,6 @@
 package wordmatcher
 
 import (
-	"fmt"
 	"sort"
 	"strings"
 	"sync"
@@ -19,7 +18,6 @@ type Matcher struct {
 
 // creates a new Matcher with the given dictionary and configuration.
 func NewMatcher(dict []string, cfg config.AppConfig, chunkSize int) *Matcher {
-	fmt.Println(`Chunk size:`, chunkSize)
 	m := &Matcher{
 		trie:      utils.NewTrie(),
 		chunkSize: chunkSize,
@@ -27,6 +25,12 @@ func NewMatcher(dict []string, cfg config.AppConfig, chunkSize int) *Matcher {
 	}
 	for _, word := range dict {
 		key := generateKey(word)
+
+		utils.Log.WithFields(map[string]interface{}{
+			"word": word,
+			"key":  key,
+		}).Debug("Inserting word into trie")
+
 		m.trie.Insert(key)
 	}
 	return m
@@ -63,6 +67,14 @@ func processChunk(chunk string, t *utils.Trie) map[string]struct{} {
 			if t.Find(key) {
 				localMatches[substr] = struct{}{}
 			}
+
+			utils.Log.WithFields(map[string]interface{}{
+				"chunk":      chunk,
+				"substr":     substr,
+				"key":        key,
+				"matchFound": t.Find(key),
+			}).Debug("Processed chunk")
+
 		}
 	}
 	return localMatches
@@ -94,6 +106,13 @@ func splitString(input string, chunkSize int) []string {
 		}
 		chunks = append(chunks, input[i:end])
 	}
+
+	utils.Log.WithFields(map[string]interface{}{
+		"input":     input,
+		"chunkSize": chunkSize,
+		"chunks":    chunks,
+	}).Debug("Split input string into chunks")
+
 	return chunks
 }
 
@@ -107,5 +126,13 @@ func (m *Matcher) CountUniqueMatches(matches map[string]struct{}) int {
 			}
 		}
 	}
+
+	utils.Log.WithFields(map[string]interface{}{
+		"matchCount":  len(matches),
+		"uniqueCount": len(uniqueWords),
+		"uniqueWords": uniqueWords,
+		"dictWords":   m.dictWords,
+	}).Debug("Counted unique matches")
+
 	return len(uniqueWords)
 }

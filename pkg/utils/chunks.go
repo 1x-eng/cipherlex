@@ -14,6 +14,11 @@ func LongestWordLength(words []string) int {
 			maxLength = len(word)
 		}
 	}
+
+	Log.WithFields(map[string]interface{}{
+		"maxLength": maxLength,
+	}).Debug("Calculated longest word length")
+
 	return maxLength
 }
 
@@ -26,6 +31,13 @@ func CalculateAverageLineLength(lines []string) int {
 	if len(lines) == 0 {
 		return 0 // Avoid division by zero
 	}
+
+	Log.WithFields(map[string]interface{}{
+		"totalLength": totalLength,
+		"lineCount":   len(lines),
+		"average":     totalLength / len(lines),
+	}).Debug("Calculated average line length")
+
 	return totalLength / len(lines)
 }
 
@@ -51,6 +63,17 @@ func (calc *ChunkSizeCalculator) DetermineChunkSize(longestWordLength int, avera
 	} else if chunkSize < calc.config.MinChunkSize {
 		chunkSize = calc.config.MinChunkSize
 	}
+
+	Log.WithFields(map[string]interface{}{
+		"longestWordLength":    longestWordLength,
+		"averageLineLength":    averageLineLength,
+		"chunkSize":            chunkSize,
+		"minChunkSize":         calc.config.MinChunkSize,
+		"maxChunkSize":         calc.config.MaxChunkSize,
+		"adjustmentFactor":     calc.config.ChunkSizeAdjustmentFactor,
+		"adjustedChunkSize":    averageLineLength / calc.config.ChunkSizeAdjustmentFactor,
+		"adjustedMinChunkSize": averageLineLength / calc.config.ChunkSizeAdjustmentFactor,
+	}).Debug("Calculated chunk size")
 
 	return chunkSize
 }

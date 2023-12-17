@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/1x-eng/cipherlex/pkg/config"
+	"github.com/1x-eng/cipherlex/pkg/utils"
 )
 
 // interface for loading and validating input strings.
@@ -29,6 +30,7 @@ func NewProcessor(config config.InputConfig) *Processor {
 func (p *Processor) LoadInputs(filePath string) ([]string, error) {
 	file, err := os.Open(filePath)
 	if err != nil {
+		utils.Log.WithError(err).Error("Failed to open input file")
 		return nil, err
 	}
 	defer file.Close()
@@ -39,7 +41,14 @@ func (p *Processor) LoadInputs(filePath string) ([]string, error) {
 // utility to checks if an input line is valid according to the configuration.
 func (p *Processor) isValidInput(input string) bool {
 	length := len(input)
-	return length >= p.config.MinLineLength && length <= p.config.MaxLineLength
+	isValid := length >= p.config.MinLineLength && length <= p.config.MaxLineLength
+
+	utils.Log.WithFields(map[string]interface{}{
+		"input":   input,
+		"isValid": isValid,
+	}).Debug("Validating input line from input file against configuration")
+
+	return isValid
 }
 
 // scanAndFilterInputs scans and filters input lines from a file.
@@ -51,6 +60,7 @@ func (p *Processor) scanAndFilterInputs(file *os.File) []string {
 		if p.isValidInput(input) {
 			inputs = append(inputs, input)
 			if len(inputs) >= p.config.MaxLineCount {
+				utils.Log.WithField("maxLineCount", p.config.MaxLineCount).Warn("Reached max line count, will not process any more lines from input file")
 				break
 			}
 		}
