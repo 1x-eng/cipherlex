@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"os"
 
 	"github.com/1x-eng/cipherlex/pkg/config"
@@ -9,10 +10,14 @@ import (
 )
 
 func main() {
-	if len(os.Args) < 3 {
-		utils.Log.Fatalf("Usage: %s [PATH TO DICTIONARY FILE] [PATH TO INPUT FILE]", os.Args[0])
+	dictionaryFilePath := flag.String("dictionary", "", "Path to dictionary file")
+	inputFilePath := flag.String("input", "", "Path to input file")
+
+	flag.Parse()
+
+	if *dictionaryFilePath == "" || *inputFilePath == "" {
+		utils.Log.Fatalf("Usage: %s --dictionary [PATH TO DICTIONARY FILE] --input [PATH TO INPUT FILE]", os.Args[0])
 	}
-	dictionaryFilePath, inputFilePath := os.Args[1], os.Args[2]
 
 	utils.Log.Info("Loading cipherlex configuration")
 	appConfig := config.NewAppConfig()
@@ -22,7 +27,7 @@ func main() {
 		"inputPath":      inputFilePath,
 	}).Info("Starting processing")
 
-	orchestrator.Processor(dictionaryFilePath, inputFilePath, appConfig)
+	orchestrator.Processor(*dictionaryFilePath, *inputFilePath, appConfig)
 
 	utils.Log.Info("Cipherlex completed successfully")
 }

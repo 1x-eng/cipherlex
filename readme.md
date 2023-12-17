@@ -50,7 +50,7 @@ go build -o cipherlex ./cmd
 
 - Run
 ```bash
-./cipherlex path/to/dictionary.txt path/to/input.txt
+./cipherlex --dictionary path/to/dictionary.txt --input path/to/input.txt
 ```
 
 
