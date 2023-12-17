@@ -23,6 +23,6 @@ func init() {
 	}
 
 	// TODO: Make log level configurable as well
-	Log.SetLevel(logrus.DebugLevel) // Default log level
+	Log.SetLevel(logrus.WarnLevel) // Default log level
 	Log.SetOutput(os.Stdout)
 }
