@@ -85,3 +85,13 @@ Configurable parameters (via environment variables):
 - MAX_LINE_LENGTH: Maximum length of input text lines.
 - MAX_LINE_COUNT: Maximum number of lines in the input file.
 - CHUNK_SIZE: Size of chunks for processing input text.
+
+## Tests
+
+From repo root, 
+
+```bash
+go test ./...
+
+```
+
