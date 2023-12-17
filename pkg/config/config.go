@@ -9,7 +9,6 @@ import (
 type AppConfig struct {
 	DictionaryConfig
 	InputConfig
-	ChunkSize int
 }
 
 // DictionaryConfig holds configuration settings specific to dictionary processing.
@@ -21,9 +20,12 @@ type DictionaryConfig struct {
 
 // InputConfig holds configuration settings specific to input processing.
 type InputConfig struct {
-	MinLineLength int
-	MaxLineLength int
-	MaxLineCount  int
+	MinLineLength             int
+	MaxLineLength             int
+	MaxLineCount              int
+	MinChunkSize              int
+	MaxChunkSize              int
+	ChunkSizeAdjustmentFactor int
 }
 
 // NewAppConfig creates a new AppConfig with settings from environment variables.
@@ -35,11 +37,13 @@ func NewAppConfig() AppConfig {
 			MaxDictionarySize: getEnvAsInt("MAX_DICTIONARY_SIZE", 100),
 		},
 		InputConfig: InputConfig{
-			MinLineLength: getEnvAsInt("MIN_LINE_LENGTH", 2),
-			MaxLineLength: getEnvAsInt("MAX_LINE_LENGTH", 500),
-			MaxLineCount:  getEnvAsInt("MAX_LINE_COUNT", 100),
+			MinLineLength:             getEnvAsInt("MIN_LINE_LENGTH", 2),
+			MaxLineLength:             getEnvAsInt("MAX_LINE_LENGTH", 500),
+			MaxLineCount:              getEnvAsInt("MAX_LINE_COUNT", 100),
+			MinChunkSize:              getEnvAsInt("MIN_CHUNK_SIZE", 10),
+			MaxChunkSize:              getEnvAsInt("MAX_CHUNK_SIZE", 100),
+			ChunkSizeAdjustmentFactor: getEnvAsInt("CHUNK_SIZE_ADJUSTMENT_FACTOR", 4), // chosing a heuristic value of 4, but this is a line in the sand.
 		},
-		ChunkSize: getEnvAsInt("CHUNK_SIZE", 1024),
 	}
 }
 

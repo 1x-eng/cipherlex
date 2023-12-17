@@ -1,26 +1,28 @@
 package wordmatcher
 
 import (
+	"fmt"
 	"sort"
 	"strings"
 	"sync"
 
 	"github.com/1x-eng/cipherlex/pkg/config"
-	"github.com/1x-eng/cipherlex/pkg/wordmatcher/trie"
+	"github.com/1x-eng/cipherlex/pkg/utils"
 )
 
 // Matcher is a struct that holds the trie and chunk size.
 type Matcher struct {
-	trie      *trie.Trie
+	trie      *utils.Trie
 	chunkSize int
 	dictWords []string
 }
 
 // creates a new Matcher with the given dictionary and configuration.
-func NewMatcher(dict []string, cfg config.AppConfig) *Matcher {
+func NewMatcher(dict []string, cfg config.AppConfig, chunkSize int) *Matcher {
+	fmt.Println(`Chunk size:`, chunkSize)
 	m := &Matcher{
-		trie:      trie.NewTrie(),
-		chunkSize: cfg.ChunkSize,
+		trie:      utils.NewTrie(),
+		chunkSize: chunkSize,
 		dictWords: dict,
 	}
 	for _, word := range dict {
@@ -52,7 +54,7 @@ func (m *Matcher) FindMatches(input string) map[string]struct{} {
 }
 
 // utility to process a chunk of the input string, finding all matches in the given trie.
-func processChunk(chunk string, t *trie.Trie) map[string]struct{} {
+func processChunk(chunk string, t *utils.Trie) map[string]struct{} {
 	localMatches := make(map[string]struct{})
 	for i := 0; i < len(chunk); i++ {
 		for j := i + 1; j <= len(chunk); j++ {
@@ -75,7 +77,7 @@ func mergeMatches(global, local map[string]struct{}, mutex *sync.Mutex) {
 	}
 }
 
-// utility to generate a key for a given word.
+// utility to generate a key for a given word, by sorting letters to account for anagrams.
 func generateKey(word string) string {
 	chars := strings.Split(word, "")
 	sort.Strings(chars)

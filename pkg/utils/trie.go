@@ -1,4 +1,4 @@
-package trie
+package utils
 
 // Node represents a node in the Trie.
 type Node struct {
